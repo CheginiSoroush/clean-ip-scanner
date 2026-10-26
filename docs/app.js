@@ -3,10 +3,11 @@
   "use strict";
 
   /* ── app launch links ─────────────────────────────────── */
-  /* Put the public URL of your Clean IP Scanner instance below and every
-     launch button on this page will open it in a new tab. Until then,
-     all launch buttons point to the GitHub repository. */
-  const APP_URL = "";
+  /* Target opened by every launch button on this page.
+     "app/" → the bundled offline demo of the scanner UI (works on GitHub Pages).
+     Put the public URL of a self-hosted Clean IP Scanner instance here instead
+     and every launch button will open that live instance in a new tab. */
+  const APP_URL = "app/";
   if (APP_URL) {
     document.querySelectorAll("[data-app-link]").forEach((a) => {
       a.setAttribute("href", APP_URL);
