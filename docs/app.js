@@ -5,8 +5,9 @@
   /* ── language ─────────────────────────────────────────── */
   const root = document.documentElement;
   const toggle = document.getElementById("langToggle");
+  /* English is the default; restore only an explicit Persian preference */
   const saved = localStorage.getItem("cis-handbook-lang");
-  if (saved === "en" || saved === "fa") setLang(saved, false);
+  if (saved === "fa") setLang(saved, false);
 
   function setLang(lang, persist = true) {
     root.setAttribute("data-lang", lang);

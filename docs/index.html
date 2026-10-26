@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" data-lang="fa">
+<html lang="en" dir="ltr" data-lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,12 +7,16 @@
 <meta name="description" content="دفترچه راهنمای کامل Clean IP Scanner — نصب، اولین اسکن، زمان‌بان شکار، WARP، تلگرام و عیب‌یابی. The complete illustrated handbook for Clean IP Scanner Web Edition." />
 <meta property="og:title" content="Clean IP Scanner — دفترچه راهنما / Handbook" />
 <meta property="og:description" content="اسکنر IP پاک و سریع برای CDNها — دفترچه راهنمای مصور دوزبانه. The complete bilingual illustrated handbook." />
-<meta property="og:image" content="assets/hero-network.png" />
+<meta property="og:image" content="https://cheginisoroush.github.io/clean-ip-scanner/assets/hero-network.png" />
 <link rel="icon" type="image/png" href="assets/logo.png" />
+<link rel="apple-touch-icon" href="assets/logo.png" />
+<meta name="theme-color" content="#070b09" />
+<meta name="color-scheme" content="dark" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
 </head>
 <body>
 
@@ -111,7 +115,7 @@
     <article class="card reveal d4"><div class="card__icon">🛡️</div><h3><span class="t-fa">اسکنر WARP</span><span class="t-en">WARP scanner</span></h3><p><span class="t-fa">پروب اندپوینت‌های کلادفلر WARP با نرخ زنده‌بودن و تاریخچه.</span><span class="t-en">Cloudflare WARP endpoint probing with alive-rate and history.</span></p></article>
     <article class="card reveal d5"><div class="card__icon">✈️</div><h3><span class="t-fa">خلاصه تلگرام</span><span class="t-en">Telegram digests</span></h3><p><span class="t-fa">گزارش دستی یا خودکار با پیوست CSV ژورنال برای اجراهای زمان‌بندی‌شده.</span><span class="t-en">Manual or auto-on-finish reports, auto-attaching the journal CSV for scheduled runs.</span></p></article>
     <article class="card reveal d6"><div class="card__icon">🗂️</div><h3><span class="t-fa">تاریخچه و CSV</span><span class="t-en">History &amp; CSV</span></h3><p><span class="t-fa">جست‌وجو، فیلتر، بازه‌های زمانی و خروجی CSV تک‌کلیکی از هر جدول.</span><span class="t-en">Search, filter, time ranges and one-click CSV export from every table.</span></p></article>
-    <article class="card reveal d7"><div class="card__icon">🌐</div><h3><span class="t-fa">دوزبانه RTL</span><span class="t-en">Bilingual RTL</span></h3><p><span class="t-fa">فارسی پیش‌فرض با چیدمان راست‌به‌چپ؛ انگلیسی با یک کلیک و چیدمان LTR.</span><span class="t-en">Persian-first with RTL layout; English one click away with mirrored LTR.</span></p></article>
+    <article class="card reveal d7"><div class="card__icon">🌐</div><h3><span class="t-fa">دوزبانهٔ کامل</span><span class="t-en">Fully bilingual</span></h3><p><span class="t-fa">انگلیسی پیش‌فرض با چیدمان LTR؛ فارسی راست‌به‌چپ با یک کلیک — انتخاب شما ذخیره می‌شود.</span><span class="t-en">English-first with LTR layout; full RTL Persian one click away — your choice is remembered.</span></p></article>
   </div>
 </section>
 
@@ -130,8 +134,8 @@
           <span class="t-en">A <b>fully local</b> web tool for finding <b>clean</b> IPs — fast, responsive addresses that work well with CDNs and circumvention setups. Everything runs on your machine: the database, the scans, the scheduler. Nothing ever leaves your box.</span>
         </p>
         <p>
-          <span class="t-fa">رابط کاربری دوزبانه است (فارسی پیش‌فرض، راست‌به‌چپ) و موتور اسکن یک سرویس مستقل <code>Bun</code> است که با <code>socket.io</code> به رابط وصل می‌شود — به همین دلیل پیشرفت اسکن در لحظه و بدون رفرش دیده می‌شود.</span>
-          <span class="t-en">The UI is bilingual (Persian by default, RTL), and the scan engine is a standalone <code>Bun</code> service connected via <code>socket.io</code> — that is why scan progress streams live, without refresh.</span>
+          <span class="t-fa">رابط کاربری دوزبانه است (انگلیسی پیش‌فرض و فارسی راست‌به‌چپ با یک کلیک) و موتور اسکن یک سرویس مستقل <code>Bun</code> است که با <code>socket.io</code> به رابط وصل می‌شود — به همین دلیل پیشرفت اسکن در لحظه و بدون رفرش دیده می‌شود.</span>
+          <span class="t-en">The UI is bilingual (English by default, full RTL Persian one click away), and the scan engine is a standalone <code>Bun</code> service connected via <code>socket.io</code> — that is why scan progress streams live, without refresh.</span>
         </p>
         <div class="callout callout--tip">
           <b><span class="t-fa">💡 نکته</span><span class="t-en">💡 Tip</span></b>
