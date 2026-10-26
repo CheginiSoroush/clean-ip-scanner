@@ -32,7 +32,7 @@
         <small>v7.6.0-web</small>
       </span>
     </a>
-    <nav class="nav__links" aria-label="chapters">
+    <nav class="nav__links" id="navMenu" aria-label="chapters">
       <a href="#intro"><span class="t-fa">معرفی</span><span class="t-en">Intro</span></a>
       <a href="#quickstart"><span class="t-fa">نصب</span><span class="t-en">Setup</span></a>
       <a href="#first-scan"><span class="t-fa">اولین اسکن</span><span class="t-en">First scan</span></a>
@@ -40,15 +40,20 @@
       <a href="#warp"><span class="t-fa">WARP</span><span class="t-en">WARP</span></a>
       <a href="#telegram"><span class="t-fa">تلگرام</span><span class="t-en">Telegram</span></a>
       <a href="#faq"><span class="t-fa">سؤالات</span><span class="t-en">FAQ</span></a>
+      <a class="nav__gh-item" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
     <div class="nav__actions">
       <button id="langToggle" class="btn btn--ghost btn--sm" aria-label="تغییر زبان / toggle language">
         <span class="t-fa">EN</span><span class="t-en">فا</span>
       </button>
-      <a class="btn btn--ghost btn--sm" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn btn--ghost btn--sm nav__gh" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">GitHub ↗</a>
+      <button id="navBurger" class="nav__burger" aria-label="منو / Menu" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </header>
+<div class="nav__scrim" id="navScrim" aria-hidden="true"></div>
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
@@ -144,7 +149,7 @@
         </div>
       </div>
       <figure class="chapter__art tilt">
-        <img src="assets/art-scan.png" alt="Scan illustration" loading="lazy" />
+        <img src="assets/art-scan.png" alt="Scan illustration" width="1152" height="864" loading="lazy" />
       </figure>
     </div>
   </section>
@@ -218,7 +223,7 @@ bun install</code></pre>
           </li>
         </ol>
         <figure class="shot">
-          <img src="screenshots/dashboard.png" alt="Dashboard — Persian UI" loading="lazy" />
+          <img src="screenshots/dashboard.png" alt="Dashboard — Persian UI" width="1440" height="900" loading="lazy" />
           <figcaption><span class="t-fa">داشبورد اسکن زنده — آمار کلی، پیکربندی و لاگ موتور</span><span class="t-en">Live scan dashboard — stats, configuration and engine log</span></figcaption>
         </figure>
         <div class="kbd-grid">
@@ -253,7 +258,7 @@ bun install</code></pre>
         </div>
       </div>
       <figure class="chapter__art tilt">
-        <img src="assets/art-warp.png" alt="Scheduler illustration" loading="lazy" />
+        <img src="assets/art-warp.png" alt="Scheduler illustration" width="1152" height="864" loading="lazy" />
       </figure>
     </div>
   </section>
@@ -270,7 +275,7 @@ bun install</code></pre>
           <span class="t-en">The <b>WARP</b> tab probes Cloudflare WARP endpoints: alive-rate, latency and full history per probe batch are stored so you can watch your network’s trend.</span>
         </p>
         <figure class="shot">
-          <img src="screenshots/warp.png" alt="WARP tab" loading="lazy" />
+          <img src="screenshots/warp.png" alt="WARP tab" width="1440" height="900" loading="lazy" />
           <figcaption><span class="t-fa">تب WARP با تاریخچه و خروجی CSV</span><span class="t-en">WARP tab with history and CSV export</span></figcaption>
         </figure>
         <div class="callout callout--warn">
@@ -298,12 +303,12 @@ bun install</code></pre>
           <span class="t-en"><b>Cloudflare DDNS</b> pushes the best clean IP straight to your domain’s A record — manually, or automatically with a minimum-IP threshold.</span>
         </p>
         <figure class="shot">
-          <img src="screenshots/integrations.png" alt="Integrations tab" loading="lazy" />
+          <img src="screenshots/integrations.png" alt="Integrations tab" width="1440" height="900" loading="lazy" />
           <figcaption><span class="t-fa">تب یکپارچه‌سازی — تلگرام و DDNS</span><span class="t-en">Integrations tab — Telegram and DDNS</span></figcaption>
         </figure>
       </div>
       <figure class="chapter__art tilt">
-        <img src="assets/art-telegram.png" alt="Telegram illustration" loading="lazy" />
+        <img src="assets/art-telegram.png" alt="Telegram illustration" width="1152" height="864" loading="lazy" />
       </figure>
     </div>
   </section>
@@ -322,7 +327,7 @@ bun install</code></pre>
           <li><span class="t-fa">همه‌چیز در SQLite محلی — پشتیبان‌گیری فقط کپی یک فایل است</span><span class="t-en">All in local SQLite — backing up is copying one file</span></li>
         </ul>
         <figure class="shot">
-          <img src="screenshots/history.png" alt="History tab" loading="lazy" />
+          <img src="screenshots/history.png" alt="History tab" width="1440" height="900" loading="lazy" />
           <figcaption><span class="t-fa">تب تاریخچه اسکن‌ها</span><span class="t-en">Scan history tab</span></figcaption>
         </figure>
       </div>

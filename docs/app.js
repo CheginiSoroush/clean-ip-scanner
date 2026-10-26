@@ -19,6 +19,31 @@
     setLang(root.getAttribute("data-lang") === "fa" ? "en" : "fa");
   });
 
+  /* ── mobile menu ──────────────────────────────────────── */
+  const nav = document.querySelector(".nav");
+  const burger = document.getElementById("navBurger");
+  const scrim = document.getElementById("navScrim");
+  const menu = document.getElementById("navMenu");
+  const wideMq = window.matchMedia("(min-width: 1021px)");
+
+  function setMenu(open) {
+    if (!nav) return;
+    nav.classList.toggle("menu-open", open);
+    burger && burger.setAttribute("aria-expanded", String(open));
+    document.body.style.overflow = open ? "hidden" : "";
+  }
+  burger && burger.addEventListener("click", () => setMenu(!nav.classList.contains("menu-open")));
+  scrim && scrim.addEventListener("click", () => setMenu(false));
+  menu && menu.addEventListener("click", (e) => {
+    if (e.target instanceof Element && e.target.closest("a")) setMenu(false);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && nav && nav.classList.contains("menu-open")) setMenu(false);
+  });
+  if (typeof wideMq.addEventListener === "function") {
+    wideMq.addEventListener("change", (e) => { if (e.matches) setMenu(false); });
+  }
+
   /* ── reveal on scroll ─────────────────────────────────── */
   const revealEls = document.querySelectorAll(".reveal");
   const io = new IntersectionObserver((entries) => {
