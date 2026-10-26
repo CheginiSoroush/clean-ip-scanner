@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Scan {
+  id          String   @id @default(cuid())
+  preset      String   @default("cloudflare")
+  label       String?
+  port        Int      @default(443)
+  pingCount   Int      @default(4)
+  timeoutMs   Int      @default(1500)
+  concurrency Int      @default(256)
+  maxIPs      Int      @default(2000)
+  speedTestCount Int   @default(10)
+  totalIPs    Int      @default(0)
+  scannedIPs  Int      @default(0)
+  aliveIPs    Int      @default(0)
+  speedTested Int      @default(0)
+  status      String   @default("done")
+  durationMs  Int      @default(0)
+  rangesText  String   @default("")
+  createdAt   DateTime @default(now())
+  results     ScanResult[]
+}
+
+model ScanResult {
+  id            String @id @default(cuid())
+  scanId        String
+  scan          Scan   @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  ip            String
+  latencyMs     Float  @default(0)
+  sent          Int    @default(0)
+  received      Int    @default(0)
+  lossRate      Float  @default(0)
+  downloadSpeed Float  @default(0)
+  uploadSpeed   Float  @default(0)
+  totalSpeed    Float  @default(0)
+  rank          Int    @default(0)
+}
+
+model Favorite {
+  id            String    @id @default(cuid())
+  ip            String    @unique
+  label         String?
+  note          String?
+  addedAt       DateTime  @default(now())
+  lastCheckAt   DateTime?
+  lastLatencyMs Float?
+  lastLossRate  Float?
+  lastStatus    String?
+  checksCount   Int       @default(0)
+}
+
+/// Append-only probe journal — every probe verdict EVER observed, kept as
+/// separate rows so the UI can draw a true TLS-trend timeline per IP
+/// (ProbeResult itself is upsert-per ip+host+port and only keeps the latest).
+model ProbeLog {
+  id        String   @id @default(cuid())
+  ip        String
+  host      String
+  port      Int      @default(443)
+  grade     String
+  tcpMs     Int?
+  tlsMs     Int?
+  ok        Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+  @@index([host, createdAt])
+}
+
+/// Generic key/value store — currently holds the optional single-user PIN lock
+/// (lock.salt / lock.hash / lock.secret). Never stores the PIN itself.
+model Setting {
+  key   String @id
+  value String
+}
+
+/// Persisted Xray-style TLS probe verdicts — survive page reloads and let the
+/// batch-probe grades reappear when the same IP+SNI combination is seen again.
+model ProbeResult {
+  id         String   @id @default(cuid())
+  ip         String
+  host       String
+  port       Int      @default(443)
+  grade      String
+  tcpMs      Int?
+  tlsMs      Int?
+  httpStatus Int?
+  ok         Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([ip, host, port])
+  @@index([host, updatedAt])
+}
+
+/// Saved proxy configs (VLESS/VMess URIs produced by the hunt config generator).
+/// The subscription endpoint (/api/sub) serves the deduped list as base64.
+model SavedConfig {
+  id        String   @id @default(cuid())
+  uri       String   @unique
+  proto     String   @default("vless")
+  label     String?
+  ip        String?
+  port      Int?
+  sni       String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+/// Cloudflare DDNS push settings (single row, id=1) — hunt v6.3.
+/// Token is stored locally (this is a self-hosted tool); API responses mask it.
+model DnsSettings {
+  id         Int      @id @default(autoincrement())
+  cfToken    String
+  zoneId     String
+  recordName String
+  recordType String   @default("A")
+  ttl        Int      @default(300)
+  proxied    Boolean  @default(false)
+  /// hunt v6.5 — scheduled auto-push of the latest hunt's healthy IPs
+  autoPush   Boolean  @default(false)
+  /// auto-push interval in minutes (10..1440)
+  autoPushMin Int     @default(30)
+  /// how many of the latest healthy IPs to sync (1..10)
+  autoPushMaxIps Int  @default(5)
+  /// last time the scheduler actually pushed (null = never)
+  autoPushAt DateTime?
+  updatedAt  DateTime @updatedAt
+}
+
+/// Cloudflare DDNS push history — hunt v6.3 (sync semantics: the record set
+/// for `recordName` ends up exactly equal to the pushed ips).
+model DnsPushLog {
+  id         Int      @id @default(autoincrement())
+  recordName String
+  ips        String
+  created    Int      @default(0)
+  kept       Int      @default(0)
+  removed    Int      @default(0)
+  ok         Boolean
+  detail     String   @default("")
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+/// Telegram digest settings (single row, id=1) — hunt v6.3.
+model TelegramSettings {
+  id           Int      @id @default(autoincrement())
+  botToken     String
+  chatId       String
+  autoOnFinish Boolean  @default(false)
+  updatedAt    DateTime @updatedAt
+}
