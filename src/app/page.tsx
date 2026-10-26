@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useQueryClient } from '@tanstack/react-query'
-import { ArrowUp, CloudCog, History, KeyRound, Plane, Radar, Star, WifiOff } from 'lucide-react'
+import { ArrowUp, BookOpen, CloudCog, History, KeyRound, Plane, Radar, Star, WifiOff } from 'lucide-react'
 import { toast } from 'sonner'
 import dynamic from 'next/dynamic'
 
@@ -761,6 +761,16 @@ export default function Home() {
             {t('page.made')}
           </a>
           <div className="flex items-center gap-3">
+            <a
+              href="https://cheginisoroush.github.io/clean-ip-scanner/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 font-medium transition-colors hover:text-emerald-500"
+              aria-label={t('page.handbook.aria')}
+            >
+              <BookOpen className="size-3.5" />
+              <span>{t('page.handbook')}</span>
+            </a>
             <button
               type="button"
               onClick={() => setShortcutsOpen(true)}

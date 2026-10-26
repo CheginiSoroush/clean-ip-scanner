@@ -466,6 +466,8 @@ const fa = {
 
   // ---------- page / footer ----------
   'page.made': 'ساخته‌شده توسط سروش چگینی برای شرایط شبکه ایران ⚡',
+  'page.handbook': 'دفترچه راهنما',
+  'page.handbook.aria': 'مشاهده دفترچه راهنمای مصور (گیتهاب پیجز)',
   'page.shortcuts': 'میان‌برها',
   'page.shortcuts.aria': 'نمایش میان‌برهای صفحه‌کلید',
   'page.scrolltop': 'بازگشت به بالای صفحه',
@@ -1654,6 +1656,8 @@ const en: Record<DictKey, string> = {
   'sc.close': 'Close dialogs',
 
   'page.made': 'Built by Soroush Chegini for Iran’s network conditions ⚡',
+  'page.handbook': 'Handbook',
+  'page.handbook.aria': 'Open the illustrated handbook (GitHub Pages)',
   'page.shortcuts': 'Shortcuts',
   'page.shortcuts.aria': 'Show keyboard shortcuts',
   'page.scrolltop': 'Back to top',
