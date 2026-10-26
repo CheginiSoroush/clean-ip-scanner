@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/CheginiSoroush/clean-ip-scanner/actions/workflows/ci.yml"><img src="https://github.com/CheginiSoroush/clean-ip-scanner/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <img src="https://img.shields.io/badge/version-7.6.0--web-10b981" alt="version" />
+  <img src="https://img.shields.io/badge/version-7.8.0--web-10b981" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-10b981" alt="license" />
   <img src="https://img.shields.io/badge/Next.js-16-black" alt="Next.js" />
   <img src="https://img.shields.io/badge/TypeScript-5-10b981" alt="TypeScript" />

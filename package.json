@@ -1,6 +1,6 @@
 {
   "name": "clean-ip-scanner",
-  "version": "7.6.0",
+  "version": "7.8.0",
   "private": true,
   "description": "Clean IP Scanner — Web Edition · real-time CDN preferred-IP scanner with a hunt scheduler, WARP integration and Telegram digests",
   "author": "Soroush Chegini",

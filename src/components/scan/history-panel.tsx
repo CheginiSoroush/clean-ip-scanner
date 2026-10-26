@@ -1,11 +1,12 @@
 'use client'
 
-import { memo, useState } from 'react'
+import { memo, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { formatDistanceToNow } from 'date-fns'
+import { format, formatDistanceToNow } from 'date-fns'
 import { faIR, enUS } from 'date-fns/locale'
 import { toast } from 'sonner'
 import {
+  CalendarDays,
   Eye,
   FileDown,
   GitCompareArrows,
@@ -15,6 +16,7 @@ import {
   ServerOff,
   Share2,
   Trash2,
+  X,
 } from 'lucide-react'
 import {
   AlertDialog,
@@ -29,6 +31,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Dialog,
   DialogContent,
@@ -144,6 +148,45 @@ function HistoryPanelInner() {
   const presetName = (id: string) =>
     lang === 'fa' ? (getPreset(id)?.nameFa ?? id) : (getPreset(id)?.name ?? id)
 
+  // ---- v7.7 — custom date-range filter (quick chips + from/to calendar pickers) ----
+  const [quickRange, setQuickRange] = useState<'all' | '24h' | '7d'>('all')
+  const [fromDate, setFromDate] = useState<Date | null>(null)
+  const [toDate, setToDate] = useState<Date | null>(null)
+
+  /** start-of-day / end-of-day epoch ms for the picked dates */
+  const customWindow = useMemo(() => {
+    if (!fromDate && !toDate) return null
+    let from = -Infinity
+    let to = Infinity
+    if (fromDate) from = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()).getTime()
+    if (toDate) to = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate()).getTime() + 86_399_999
+    // swapped picks are normalized (later picker wins) instead of silently matching nothing
+    if (Number.isFinite(from) && Number.isFinite(to) && from > to) [from, to] = [to, from]
+    return { from, to }
+  }, [fromDate, toDate])
+
+  const filteredScans = useMemo(() => {
+    if (customWindow) {
+      return scans.filter((s) => {
+        const ts = new Date(s.createdAt).getTime()
+        return ts >= customWindow.from && ts <= customWindow.to
+      })
+    }
+    if (quickRange === 'all') return scans
+    const cutoff = quickRange === '24h' ? Date.now() - 86_400_000 : Date.now() - 7 * 86_400_000
+    return scans.filter((s) => new Date(s.createdAt).getTime() >= cutoff)
+  }, [scans, quickRange, customWindow])
+
+  const rangeActive = customWindow !== null || quickRange !== 'all'
+  const pickDay = (d: Date | null) =>
+    d ? format(d, 'yyyy-MM-dd') : null
+
+  const setQuick = (rid: 'all' | '24h' | '7d') => {
+    setQuickRange(rid)
+    setFromDate(null)
+    setToDate(null)
+  }
+
   return (
     <div className="space-y-4">
       {scans.length > 0 ? <ScanTrends scans={scans} /> : null}
@@ -189,6 +232,104 @@ function HistoryPanelInner() {
         </div>
       </div>
 
+      {/* v7.7 — date-range filter row (quick chips + custom from/to calendar pickers) */}
+      {scans.length > 0 ? (
+        <div className="mt-4 flex flex-wrap items-center gap-1.5">
+          <span className="me-1 hidden items-center gap-1 text-[11px] font-semibold text-muted-foreground sm:inline-flex">
+            <CalendarDays className="size-3.5" aria-hidden />
+            {t('history.filter.title')}
+          </span>
+          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t('history.filter.title')}>
+            {(['24h', '7d', 'all'] as const).map((rid) => (
+              <button
+                key={rid}
+                type="button"
+                aria-pressed={quickRange === rid && !customWindow}
+                onClick={() => setQuick(rid)}
+                className={cn(
+                  'flex h-9 items-center rounded-md border px-2.5 py-1 text-[11px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60',
+                  quickRange === rid && !customWindow
+                    ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+                    : 'border-border bg-background/40 text-muted-foreground hover:bg-background/70 hover:text-foreground',
+                )}
+              >
+                {t(`hist.range.${rid}`)}
+              </button>
+            ))}
+          </div>
+          <span aria-hidden className="mx-0.5 h-5 w-px shrink-0 self-center bg-border" />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn(
+                  'h-9 gap-1.5 text-[11px]',
+                  fromDate && 'border-emerald-500/50 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
+                )}
+              >
+                <CalendarDays className="size-3.5" aria-hidden />
+                {fromDate ? <span dir="ltr" className="font-mono">{pickDay(fromDate)}</span> : t('history.range.from')}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={fromDate ?? undefined}
+                onSelect={(d) => setFromDate(d ?? null)}
+                disabled={{ after: new Date() }}
+                locale={dateFnsLocale}
+              />
+            </PopoverContent>
+          </Popover>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn(
+                  'h-9 gap-1.5 text-[11px]',
+                  toDate && 'border-emerald-500/50 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
+                )}
+              >
+                <CalendarDays className="size-3.5" aria-hidden />
+                {toDate ? <span dir="ltr" className="font-mono">{pickDay(toDate)}</span> : t('history.range.to')}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={toDate ?? undefined}
+                onSelect={(d) => setToDate(d ?? null)}
+                disabled={{ after: new Date() }}
+                locale={dateFnsLocale}
+              />
+            </PopoverContent>
+          </Popover>
+          {rangeActive ? (
+            <>
+              <Badge variant="outline" className="text-muted-foreground">
+                {t('history.count', { n: num(filteredScans.length) })}
+              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 gap-1 px-2 text-[11px] text-muted-foreground"
+                onClick={() => {
+                  setQuickRange('all')
+                  setFromDate(null)
+                  setToDate(null)
+                }}
+                aria-label={t('history.range.clear')}
+              >
+                <X className="size-3.5" aria-hidden />
+                {t('history.range.clear')}
+              </Button>
+            </>
+          ) : null}
+        </div>
+      ) : null}
+
       {/* Error */}
       {list.isError ? (
         <div className="mt-6 flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-red-500/30 bg-red-500/5 py-10 text-center">
@@ -228,7 +369,11 @@ function HistoryPanelInner() {
       ) : null}
 
       {/* List */}
-      {scans.length > 0 ? (
+      {scans.length > 0 && filteredScans.length === 0 ? (
+        <div className="mt-5 flex h-12 items-center justify-center rounded-lg border border-dashed bg-background/40 px-3 text-center text-[11px] text-muted-foreground">
+          {t('history.range.empty')}
+        </div>
+      ) : filteredScans.length > 0 ? (
         <div className="scrollbar-thin mt-5 max-h-96 overflow-auto rounded-lg border">
           <Table className="min-w-[560px]">
             <TableHeader className="sticky top-0 z-10 bg-card/95 backdrop-blur">
@@ -250,7 +395,7 @@ function HistoryPanelInner() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {scans.map((scan: ScanListItem) => {
+              {filteredScans.map((scan: ScanListItem) => {
                 const statusCls = STATUS_CLS[scan.status] ?? 'border-zinc-500/30 bg-zinc-500/10 text-zinc-500'
                 const statusLabel = STATUS_KEY[scan.status] ? t(STATUS_KEY[scan.status]) : scan.status
                 return (

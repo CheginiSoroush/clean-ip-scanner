@@ -17,6 +17,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis } from 'recharts'
 import {
   ChevronDown,
   Copy,
@@ -436,6 +437,23 @@ export function WarpPanel({ connected, warpState, onStart, onStop, onReset }: Wa
   }, [histFiltered, histSort])
 
   const histVisible = useMemo(() => histSorted.slice(0, histShow), [histSorted, histShow])
+
+  /**
+   * v7.7 — alive-rate trend across the RANGE-FILTERED runs (oldest → newest),
+   * mirroring the list above it. Runs with tested = 0 are skipped (no rate).
+   */
+  const warpTrend = useMemo(() => {
+    const rows = histRanged
+      .filter((r) => r.tested > 0)
+      .sort((a, b) => a.startedAt - b.startedAt)
+      .map((r) => ({ at: r.startedAt, rate: Math.round((r.alive / r.tested) * 1000) / 10, alive: r.alive, tested: r.tested }))
+    const rates = rows.map((r) => r.rate)
+    return {
+      rows,
+      avg: rates.length ? Math.round((rates.reduce((a, b) => a + b, 0) / rates.length) * 10) / 10 : 0,
+      best: rates.length ? Math.max(...rates) : 0,
+    }
+  }, [histRanged])
 
   /** copies the full live-endpoint list of the run shown in the detail dialog (same join as the live copy-all) */
   const copyDetailEndpoints = useCallback(() => {
@@ -1041,6 +1059,85 @@ export function WarpPanel({ connected, warpState, onStart, onStop, onReset }: Wa
             </button>
           </div>
         </div>
+
+        {/* v7.7 — alive-rate trend sparkline (recharts; range-filtered, oldest → newest) */}
+        {warpTrend.rows.length >= 2 ? (
+          <div className="mb-1.5 rounded-lg border border-amber-500/20 bg-amber-500/[0.04] p-2.5">
+            <div className="mb-1 flex flex-wrap items-center justify-between gap-1">
+              <p className="flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                <Signal className="size-3.5" aria-hidden />
+                {t('warp.trend.title')}
+              </p>
+              <p className="text-[10px] text-muted-foreground">
+                {t('warp.trend.runs', { n: num(warpTrend.rows.length) })}
+              </p>
+            </div>
+            <div dir="ltr">
+              <ResponsiveContainer width="100%" height={110}>
+                <LineChart data={warpTrend.rows} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 4" strokeOpacity={0.12} />
+                  <XAxis
+                    dataKey="at"
+                    type="number"
+                    scale="time"
+                    domain={['dataMin', 'dataMax']}
+                    tickFormatter={(v: number) =>
+                      new Intl.DateTimeFormat(dateLocale, { month: 'short', day: 'numeric' }).format(new Date(v))
+                    }
+                    tick={{ fontSize: 9 }}
+                    tickLine={false}
+                    axisLine={false}
+                    minTickGap={32}
+                  />
+                  <YAxis
+                    domain={[0, (dataMax: number) => Math.max(1, Math.ceil(dataMax * 1.3 * 10) / 10)]}
+                    tick={{ fontSize: 9 }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={40}
+                    unit="%"
+                  />
+                  <RTooltip
+                    formatter={(v) => [`${num(Array.isArray(v) ? Number(v[0]) : Number(v))}%`, t('hunt.hist.detail.rate')]}
+                    labelFormatter={(v) => fmtRunDate(Number(v))}
+                    contentStyle={{
+                      background: 'rgba(12,12,10,.94)',
+                      border: '1px solid rgba(245,158,11,.35)',
+                      borderRadius: 10,
+                      fontSize: 11,
+                      direction: dir === 'rtl' ? 'rtl' : 'ltr',
+                    }}
+                    labelStyle={{ color: '#f59e0b' }}
+                    itemStyle={{ color: '#e4e4e7' }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="rate"
+                    stroke="#f59e0b"
+                    strokeWidth={2}
+                    dot={{ r: 2.5, fill: '#f59e0b', strokeWidth: 0 }}
+                    activeDot={{ r: 4 }}
+                    isAnimationActive={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="mt-1 flex items-center justify-between gap-2 text-[10px] text-muted-foreground">
+              <span>
+                {t('warp.trend.avg')}:{' '}
+                <b className="font-mono text-amber-700 dark:text-amber-300" dir="ltr">
+                  {num(warpTrend.avg)}%
+                </b>
+              </span>
+              <span>
+                {t('warp.trend.best')}:{' '}
+                <b className="font-mono text-amber-700 dark:text-amber-300" dir="ltr">
+                  {num(warpTrend.best)}%
+                </b>
+              </span>
+            </div>
+          </div>
+        ) : null}
 
         {/* client-side search over found[].endpoint / found[].ip (mono ltr island; ≤30 runs ⇒ no debounce) */}
         {histRuns.length > 0 ? (

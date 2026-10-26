@@ -1,7 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { Check, Gauge, RotateCcw, SlidersHorizontal, Sparkles } from 'lucide-react'
+import { useMemo, useRef, useState } from 'react'
+import { Check, Download, Gauge, RotateCcw, SlidersHorizontal, Sparkles, Upload } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -13,6 +14,7 @@ import {
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
 import {
+  clampWeights,
   computeIpScores,
   rankScores,
   scoreBand,
@@ -23,6 +25,7 @@ import {
   type ScoreWeights,
 } from '@/lib/ip-score'
 import { getScoreWeights, setScoreWeights, useScoreWeights } from '@/lib/score-weights'
+import { csvFileStamp } from '@/lib/csv'
 import { useI18n } from '@/components/i18n-provider'
 import type { DictKey } from '@/lib/i18n'
 
@@ -49,6 +52,7 @@ export function ScoreTuningDialog({ open, onOpenChange, inputs, probes, favorite
   const { t, num, dir, lang } = useI18n()
   const weights = useScoreWeights()
   const [presetKey, setPresetKey] = useState<string | null>('default')
+  const fileRef = useRef<HTMLInputElement>(null)
 
   const fmt = useMemo(
     () => ({
@@ -78,6 +82,51 @@ export function ScoreTuningDialog({ open, onOpenChange, inputs, probes, favorite
   }
 
   const total = WEIGHT_KEYS.reduce((s, k) => s + weights[k], 0)
+
+  // ---- v7.8 — weight-preset import / export (portable JSON, same shape the store persists) ----
+  const exportWeights = () => {
+    try {
+      const payload = {
+        app: 'clean-ip-scanner',
+        kind: 'score-weights',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        weights: getScoreWeights(),
+      }
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `cis-score-weights-${csvFileStamp()}.json`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+      toast.success(t('tune.export.ok'))
+    } catch {
+      toast.error(t('tune.export.fail'))
+    }
+  }
+
+  const onImportFile = async (file: File) => {
+    try {
+      const parsed = JSON.parse(await file.text()) as {
+        kind?: string
+        weights?: Partial<ScoreWeights>
+      }
+      const raw = parsed && typeof parsed === 'object' && parsed.kind === 'score-weights' ? parsed.weights : parsed
+      const w = raw as Partial<ScoreWeights> | null | undefined
+      // strict: every component must be present and finite — no silent half-presets
+      if (!w || typeof w !== 'object' || !WEIGHT_KEYS.every((k) => Number.isFinite(Number(w[k])))) {
+        throw new Error('invalid preset')
+      }
+      setScoreWeights(clampWeights(w))
+      setPresetKey(null)
+      toast.success(t('tune.import.ok'))
+    } catch {
+      toast.error(t('tune.import.fail'))
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -166,6 +215,41 @@ export function ScoreTuningDialog({ open, onOpenChange, inputs, probes, favorite
               </div>
             </div>
           ) : null}
+
+          {/* v7.8 — portable preset import / export */}
+          <div className="flex items-center gap-1.5">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 flex-1 gap-1.5 text-[11px]"
+              onClick={exportWeights}
+              aria-label={t('tune.export')}
+            >
+              <Download className="size-3.5" aria-hidden />
+              {t('tune.export')}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 flex-1 gap-1.5 text-[11px]"
+              onClick={() => fileRef.current?.click()}
+              aria-label={t('tune.import')}
+            >
+              <Upload className="size-3.5" aria-hidden />
+              {t('tune.import')}
+            </Button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0]
+                if (f) void onImportFile(f)
+                e.target.value = ''
+              }}
+            />
+          </div>
 
           {/* reset */}
           <div className="flex items-center justify-between">

@@ -783,7 +783,7 @@ export default function Home() {
               </span>
             </button>
             <Badge variant="outline" className="font-mono">
-              v7.6.0-web
+              v7.8.0-web
             </Badge>
           </div>
         </div>

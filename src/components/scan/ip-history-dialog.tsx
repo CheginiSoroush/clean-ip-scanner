@@ -14,6 +14,8 @@ import { formatDistanceToNow } from 'date-fns'
 import { faIR, enUS } from 'date-fns/locale'
 import { Gauge, Loader2, Network, Radar, Timer, Copy } from 'lucide-react'
 import { toast } from 'sonner'
+import { computeIpScore, SCORE_BAND_HEX, scoreBand, type ScoreGrade } from '@/lib/ip-score'
+import { getScoreWeights } from '@/lib/score-weights'
 import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
@@ -212,6 +214,61 @@ function TrendSparkline({ points }: { points: TrendPoint[] }) {
   )
 }
 
+/** v7.8 — pure-SVG score trend: one point per recorded scan, 0–100 fixed scale, higher = better */
+function ScoreSparkline({ points }: { points: { at: string; score: number }[] }) {
+  const { t, num, dateLocale } = useI18n()
+  const W = 320
+  const H = 72
+  const PAD = 10
+
+  const { pts, sMin, sMax, spanDays } = useMemo(() => {
+    const n = points.length
+    const t0 = new Date(points[0].at).getTime()
+    const tN = new Date(points[n - 1].at).getTime()
+    const span = Math.max(1, tN - t0)
+    const x = (i: number) => (n <= 1 ? W / 2 : PAD + ((new Date(points[i].at).getTime() - t0) / span) * (W - PAD * 2))
+    // score: HIGHER is better = higher point (no inversion needed)
+    const y = (v: number) => PAD + (1 - v / 100) * (H - PAD * 2)
+    const pts = points.map((p, i) => ({ x: x(i), y: y(p.score), v: p.score, at: p.at }))
+    const vals = points.map((p) => p.score)
+    return { pts, sMin: Math.min(...vals), sMax: Math.max(...vals), spanDays: Math.max(1, Math.round((tN - t0) / 86_400_000)) }
+  }, [points])
+
+  const line = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')
+  const last = pts[pts.length - 1]?.v ?? 0
+  const lineCls =
+    last >= 70 ? 'stroke-emerald-500' : last >= 55 ? 'stroke-teal-500' : last >= 40 ? 'stroke-amber-500' : 'stroke-zinc-500'
+
+  return (
+    <div dir="ltr">
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-16 w-full" role="img" aria-label={t('iph.score.title')}>
+        <line x1={PAD} x2={W - PAD} y1={PAD} y2={PAD} stroke="currentColor" strokeOpacity={0.08} strokeDasharray="3 4" />
+        <line x1={PAD} x2={W - PAD} y1={H - PAD} y2={H - PAD} stroke="currentColor" strokeOpacity={0.08} strokeDasharray="3 4" />
+        <path d={line} fill="none" className={lineCls} strokeWidth={1.8} strokeLinejoin="round" strokeLinecap="round" />
+        {pts.map((p, i) => (
+          <circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r={2.6}
+            fill={SCORE_BAND_HEX[scoreBand(p.v)]}
+            className="stroke-background"
+            strokeWidth={1}
+          >
+            <title>{`${num(p.v)} / 100 · ${new Date(p.at).toLocaleDateString(dateLocale)}`}</title>
+          </circle>
+        ))}
+      </svg>
+      <div className="mt-0.5 flex items-center justify-between text-[9.5px] text-muted-foreground" dir="rtl">
+        <span dir="ltr">
+          {t('iph.trend.range', { min: num(Math.round(sMin)), max: num(Math.round(sMax)) })}
+        </span>
+        <span dir="ltr">⏱ {num(spanDays)}d · n={num(pts.length)}</span>
+      </div>
+    </div>
+  )
+}
+
 export function IpHistoryDialog({ open, onOpenChange, ip, geo }: IpHistoryDialogProps) {
   const { t, num, dir, dateLocale } = useI18n()
 
@@ -253,6 +310,33 @@ export function IpHistoryDialog({ open, onOpenChange, ip, geo }: IpHistoryDialog
     const best = ranked[0]
     return { host: best.host, port: best.port, grade: best.grade, tlsMs: best.tlsMs }
   }, [probes])
+
+  /**
+   * v7.8 — score trend per recorded scan: the SAME scoring engine the live
+   * dashboard uses (computeIpScore + current user weights), fed with each
+   * appearance's own latency/loss/speed. The CURRENT best probe verdict is
+   * shared across points (probe history is not persisted per scan) — the
+   * hint line under the chart says exactly that. oldest → newest.
+   */
+  const scoreSeries = useMemo(() => {
+    if (scans.length < 2) return []
+    const okProbe = probes.find((p) => p.ok)
+    const probeSummary = okProbe
+      ? { grade: okProbe.grade as ScoreGrade, tlsMs: okProbe.tlsMs ?? null, ok: true }
+      : undefined
+    const weights = getScoreWeights()
+    const fmt = { bytesPerSec: formatBytesPerSec, latency: formatLatency }
+    return scans.map((s) => ({
+      at: s.createdAt,
+      score: computeIpScore(
+        { ip: ip ?? '', latencyMs: s.latencyMs, lossRate: s.lossRate, totalSpeed: s.totalSpeed },
+        probeSummary,
+        false,
+        fmt,
+        weights,
+      ).score,
+    }))
+  }, [scans, probes, ip])
 
   const copyTarget = useCallback(
     (target: string) => {
@@ -323,6 +407,26 @@ export function IpHistoryDialog({ open, onOpenChange, ip, geo }: IpHistoryDialog
             {stats.n >= 2 ? (
               <div className="rounded-lg border bg-card/40 p-2.5">
                 <Timeline scans={scans} />
+              </div>
+            ) : null}
+
+            {/* v7.8 — score trend (same engine as the live dashboard, 0–100) */}
+            {scoreSeries.length >= 2 ? (
+              <div>
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-semibold text-muted-foreground">{t('iph.score.title')}</span>
+                  <span
+                    className="font-mono text-[10px] font-bold"
+                    dir="ltr"
+                    style={{ color: SCORE_BAND_HEX[scoreBand(scoreSeries[scoreSeries.length - 1].score)] }}
+                  >
+                    {t('iph.score.latest')}: {num(scoreSeries[scoreSeries.length - 1].score)}
+                  </span>
+                </div>
+                <div className="rounded-lg border bg-card/40 p-2.5">
+                  <ScoreSparkline points={scoreSeries} />
+                  <p className="mt-1 text-[9.5px] text-muted-foreground">{t('iph.score.hint')}</p>
+                </div>
               </div>
             ) : null}
 

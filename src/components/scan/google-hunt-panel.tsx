@@ -118,6 +118,7 @@ import type {
   HuntProviderSelection,
   HuntProviderStats,
   HuntScheduleFireSettings,
+  HuntScheduleJournalEntry,
   HuntScheduleState,
   HuntTargetOverride,
 } from '@/lib/scan-protocol'
@@ -916,6 +917,8 @@ export function GoogleHunterPanel({ connected, huntState, recon, schedState, onS
   const [schedBusy, setSchedBusy] = useState(false)
   /** v7.1 — journal collapsible visibility (header always shows the live count) */
   const [jrnOpen, setJrnOpen] = useState(false)
+  /** v7.7 — journal entry behind the open detail dialog (null = closed) */
+  const [jrnDetail, setJrnDetail] = useState<HuntScheduleJournalEntry | null>(null)
   /** 1s wall clock for the live countdown (ticking only while a schedule is armed) */
   const [schedNow, setSchedNow] = useState(() => Date.now())
   /**
@@ -2136,7 +2139,17 @@ export function GoogleHunterPanel({ connected, huntState, recon, schedState, onS
                 return (
                   <li
                     key={`${e.at}-${i}`}
-                    className="flex items-center gap-2 rounded-md border border-zinc-500/20 bg-background/50 px-2 py-1.5"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={t('hunt.jrn.detail.open')}
+                    onClick={() => setJrnDetail(e)}
+                    onKeyDown={(ev) => {
+                      if (ev.key === 'Enter' || ev.key === ' ') {
+                        ev.preventDefault()
+                        setJrnDetail(e)
+                      }
+                    }}
+                    className="flex cursor-pointer items-center gap-2 rounded-md border border-zinc-500/20 bg-background/50 px-2 py-1.5 transition-colors hover:border-zinc-500/40 hover:bg-background/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500/60"
                   >
                     {e.kind === 'done' ? (
                       <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" aria-hidden />
@@ -2184,6 +2197,128 @@ export function GoogleHunterPanel({ connected, huntState, recon, schedState, onS
             </ul>
           ) : null}
         </div>
+
+        {/* ---------- v7.7 — per-event journal detail dialog ---------- */}
+        <Dialog
+          open={!!jrnDetail}
+          onOpenChange={(open) => {
+            if (!open) setJrnDetail(null)
+          }}
+        >
+          <DialogContent dir={dir} className="max-h-[85dvh] max-w-md overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <span className="flex size-7 items-center justify-center rounded-lg bg-zinc-500/10 text-zinc-600 dark:text-zinc-300">
+                  {jrnDetail?.kind === 'done' ? (
+                    <CheckCircle2 className="size-4" aria-hidden />
+                  ) : jrnDetail?.kind === 'postponed' ? (
+                    <TimerOff className="size-4" aria-hidden />
+                  ) : (
+                    <Zap className="size-4" aria-hidden />
+                  )}
+                </span>
+                {t('hunt.jrn.detail.title')}
+              </DialogTitle>
+              <DialogDescription>
+                {jrnDetail?.kind === 'done'
+                  ? t('hunt.jrn.kind.done')
+                  : jrnDetail?.kind === 'postponed'
+                    ? t('hunt.jrn.kind.postponed')
+                    : t('hunt.jrn.kind.fire')}
+              </DialogDescription>
+            </DialogHeader>
+            {jrnDetail ? (
+              <div className="space-y-2.5">
+                {/* event time */}
+                <div className="rounded-lg border bg-background/40 px-3 py-2">
+                  <div className="text-[10px] text-muted-foreground">{t('hunt.jrn.detail.at')}</div>
+                  <div className="mt-0.5 font-mono text-xs font-semibold" dir="ltr">
+                    {new Date(jrnDetail.at).toLocaleString(dateLocale)}
+                  </div>
+                  <div className="mt-0.5 text-[10px] text-muted-foreground">
+                    {formatDistanceToNow(new Date(jrnDetail.at), {
+                      addSuffix: true,
+                      locale: lang === 'fa' ? faIR : enUS,
+                    })}
+                  </div>
+                </div>
+
+                {/* v7.7 — full settings echo for fire events (the journal row only shows a compact LTR summary) */}
+                {jrnDetail.kind === 'fire' ? (
+                  jrnDetail.settings ? (
+                    <div>
+                      <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
+                        {t('hunt.jrn.detail.settings')}
+                      </div>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {([
+                          [t('hunt.jrn.detail.provider'), jrnDetail.settings.provider],
+                          [t('hunt.jrn.detail.host'), jrnDetail.settings.host],
+                          [t('hunt.jrn.detail.port'), jrnDetail.settings.port != null ? num(jrnDetail.settings.port) : null],
+                          [t('hunt.jrn.detail.target'), jrnDetail.settings.target != null ? num(jrnDetail.settings.target) : null],
+                          [t('hunt.jrn.detail.batch'), jrnDetail.settings.batchSize != null ? num(jrnDetail.settings.batchSize) : null],
+                          [t('hunt.jrn.detail.conc'), jrnDetail.settings.concurrency != null ? num(jrnDetail.settings.concurrency) : null],
+                          [t('hunt.jrn.detail.verify'), jrnDetail.settings.verify != null ? num(jrnDetail.settings.verify) : null],
+                          [t('hunt.jrn.detail.speed'), jrnDetail.settings.speed],
+                        ] as Array<[string, string | number | null | undefined]>)
+                          .filter(([, v]) => v != null && v !== '')
+                          .map(([k, v]) => (
+                            <div key={k} className="rounded-lg border bg-background/40 px-2.5 py-1.5">
+                              <div className="truncate text-[9.5px] text-muted-foreground">{k}</div>
+                              <div className="mt-0.5 truncate font-mono text-[11px] font-semibold" dir="ltr">
+                                {v}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="rounded-lg border border-dashed bg-background/40 px-3 py-2 text-[11px] text-muted-foreground">
+                      {t('hunt.jrn.detail.nothing')}
+                    </p>
+                  )
+                ) : null}
+
+                {/* done events — full run stats */}
+                {jrnDetail.kind === 'done' ? (
+                  <div>
+                    <div className="mb-1 text-[11px] font-semibold text-muted-foreground">{t('hunt.jrn.detail.result')}</div>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {([
+                        [t('hunt.jrn.detail.tested'), num(jrnDetail.tested ?? 0)],
+                        [t('hunt.jrn.detail.healthy'), num(jrnDetail.healthy ?? 0)],
+                        [
+                          t('hunt.jrn.detail.rate'),
+                          jrnDetail.tested
+                            ? `${num(Math.round(((jrnDetail.healthy ?? 0) / jrnDetail.tested) * 1000) / 10)}%`
+                            : '—',
+                        ],
+                        [t('hunt.jrn.detail.duration'), fmtDur(jrnDetail.durationMs ?? 0)],
+                        [t('hunt.jrn.detail.stopped'), jrnDetail.stopped ? '■' : null],
+                      ] as Array<[string, string | null]>)
+                        .filter(([, v]) => v !== null)
+                        .map(([k, v]) => (
+                          <div key={k} className="rounded-lg border bg-background/40 px-2.5 py-1.5">
+                            <div className="truncate text-[9.5px] text-muted-foreground">{k}</div>
+                            <div className="mt-0.5 truncate font-mono text-[11px] font-semibold" dir="ltr">
+                              {v}
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {/* postponed events — honest explanation */}
+                {jrnDetail.kind === 'postponed' ? (
+                  <p className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-[11px] text-amber-700 dark:text-amber-300">
+                    {t('hunt.jrn.postponed')}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* ---------- recon strip (reverse-engineered Google intelligence) ---------- */}
