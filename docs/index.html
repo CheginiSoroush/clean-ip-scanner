@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-lang="fa">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clean IP Scanner — دفترچه راهنما / Handbook</title>
+<meta name="description" content="دفترچه راهنمای کامل Clean IP Scanner — نصب، اولین اسکن، زمان‌بان شکار، WARP، تلگرام و عیب‌یابی. The complete illustrated handbook for Clean IP Scanner Web Edition." />
+<meta property="og:title" content="Clean IP Scanner — دفترچه راهنما / Handbook" />
+<meta property="og:description" content="اسکنر IP پاک و سریع برای CDNها — دفترچه راهنمای مصور دوزبانه. The complete bilingual illustrated handbook." />
+<meta property="og:image" content="assets/hero-network.png" />
+<link rel="icon" type="image/png" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="progress"><div class="progress__bar" id="progressBar"></div></div>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<header class="nav" id="top">
+  <div class="nav__inner">
+    <a class="nav__brand" href="#top">
+      <span class="nav__logo"><img src="assets/logo.png" alt="" /><span class="nav__ping"></span></span>
+      <span class="nav__title">
+        <span class="t-fa">کلین آی‌پی اسکنر</span><span class="t-en">Clean IP Scanner</span>
+        <small>v7.6.0-web</small>
+      </span>
+    </a>
+    <nav class="nav__links" aria-label="chapters">
+      <a href="#intro"><span class="t-fa">معرفی</span><span class="t-en">Intro</span></a>
+      <a href="#quickstart"><span class="t-fa">نصب</span><span class="t-en">Setup</span></a>
+      <a href="#first-scan"><span class="t-fa">اولین اسکن</span><span class="t-en">First scan</span></a>
+      <a href="#hunt"><span class="t-fa">زمان‌بان شکار</span><span class="t-en">Hunt</span></a>
+      <a href="#warp"><span class="t-fa">WARP</span><span class="t-en">WARP</span></a>
+      <a href="#telegram"><span class="t-fa">تلگرام</span><span class="t-en">Telegram</span></a>
+      <a href="#faq"><span class="t-fa">سؤالات</span><span class="t-en">FAQ</span></a>
+    </nav>
+    <div class="nav__actions">
+      <button id="langToggle" class="btn btn--ghost btn--sm" aria-label="تغییر زبان / toggle language">
+        <span class="t-fa">EN</span><span class="t-en">فا</span>
+      </button>
+      <a class="btn btn--ghost btn--sm" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero__bg">
+    <img src="assets/hero-network.png" alt="" aria-hidden="true" />
+    <div class="hero__glow"></div>
+    <div class="particles" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+  </div>
+  <div class="hero__inner">
+    <div class="hero__badge reveal">
+      <span class="dot"></span>
+      <span class="t-fa">نسخه وب ۷.۶.۰ — پایدار</span><span class="t-en">Web Edition 7.6.0 — stable</span>
+    </div>
+    <h1 class="hero__title reveal d1">
+      <span class="t-fa">IPهای <em>پاک</em> را <span class="shimmer">شکار</span> کن</span>
+      <span class="t-en">Hunt <em>clean</em> IPs in <span class="shimmer">real time</span></span>
+    </h1>
+    <p class="hero__sub reveal d2">
+      <span class="t-fa">دفترچه راهنمای کامل Clean IP Scanner — از نصب تا شکار خودکار، WARP، تلگرام و عیب‌یابی؛ قدم‌به‌قدم و مصور.</span>
+      <span class="t-en">The complete illustrated handbook for Clean IP Scanner — from installation to automated hunting, WARP, Telegram and troubleshooting, step by step.</span>
+    </p>
+    <div class="hero__cta reveal d3">
+      <a class="btn btn--primary btn--lg" href="#quickstart">
+        <span class="t-fa">شروع کنید 🚀</span><span class="t-en">Get started 🚀</span>
+      </a>
+      <a class="btn btn--outline btn--lg" href="#intro">
+        <span class="t-fa">فصل اول</span><span class="t-en">Chapter 1</span>
+      </a>
+    </div>
+    <div class="terminal reveal d4" dir="ltr">
+      <div class="terminal__bar"><i></i><i></i><i></i><span>scan-engine — zsh</span></div>
+      <pre class="terminal__body" id="term"></pre>
+    </div>
+  </div>
+  <div class="hero__wave" aria-hidden="true"></div>
+</section>
+
+<!-- ═══════════════ STATS ═══════════════ -->
+<section class="stats">
+  <div class="stats__inner">
+    <div class="stat reveal"><b data-count="7">0</b><span class="t-fa">پریست CDN</span><span class="t-en">CDN presets</span></div>
+    <div class="stat reveal d1"><b data-count="1096">0</b><span class="t-fa">کلید ترجمه</span><span class="t-en">i18n keys</span></div>
+    <div class="stat reveal d2"><b data-count="2">0</b><span class="t-fa">تم روشن/تاریک</span><span class="t-en">themes</span></div>
+    <div class="stat reveal d3"><b data-count="100" data-suffix="%">0</b><span class="t-fa">محلی و خصوصی</span><span class="t-en">local &amp; private</span></div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section class="features" id="features">
+  <h2 class="sec-title reveal">
+    <span class="t-fa">همه‌چیز در یک جعبه‌ابزار</span><span class="t-en">Everything in one toolbox</span>
+  </h2>
+  <p class="sec-sub reveal d1">
+    <span class="t-fa">اسکن زنده، شکار، زمان‌بندی، هشدار و خروجی — بدون هیچ سرویس ابری.</span>
+    <span class="t-en">Live scan, hunt, schedule, notify and export — with zero cloud services.</span>
+  </p>
+  <div class="features__grid">
+    <article class="card reveal"><div class="card__icon">📡</div><h3><span class="t-fa">اسکنر زنده</span><span class="t-en">Live scanner</span></h3><p><span class="t-fa">اسکن تأخیر TCP/TLS با ماتریس پورت، سطوح تأیید و کنترل همزمانی.</span><span class="t-en">TCP/TLS latency scanning with a port matrix, verify levels and concurrency control.</span></p></article>
+    <article class="card reveal d1"><div class="card__icon">🧭</div><h3><span class="t-fa">پریست‌های CDN</span><span class="t-en">CDN presets</span></h3><p><span class="t-fa">کلادفلر، گوگل کلاد، فستلی، کلادفرانت، آژور، آروان و جیکور + رنج سفارشی.</span><span class="t-en">Cloudflare, Google Cloud, Fastly, CloudFront, Azure, ArvanCloud, Gcore + custom CIDR.</span></p></article>
+    <article class="card reveal d2"><div class="card__icon">🎯</div><h3><span class="t-fa">شکارچی IP گوگل</span><span class="t-en">Google IP hunter</span></h3><p><span class="t-fa">منابع زنده (SPF، رنج API، RIPE…) با گزارش سلامت و دانش‌نامه داخلی.</span><span class="t-en">Live sources (SPF, API ranges, RIPE…) with health reports and a knowledge base.</span></p></article>
+    <article class="card reveal d3"><div class="card__icon">⏱️</div><h3><span class="t-fa">زمان‌بان شکار</span><span class="t-en">Hunt scheduler</span></h3><p><span class="t-fa">شکار دوره‌ای سمت سرور با ژورنال ماندگار و بازتاب تنظیمات هر اجرا.</span><span class="t-en">Server-side recurring hunts with a persisted journal and per-fire settings echo.</span></p></article>
+    <article class="card reveal d4"><div class="card__icon">🛡️</div><h3><span class="t-fa">اسکنر WARP</span><span class="t-en">WARP scanner</span></h3><p><span class="t-fa">پروب اندپوینت‌های کلادفلر WARP با نرخ زنده‌بودن و تاریخچه.</span><span class="t-en">Cloudflare WARP endpoint probing with alive-rate and history.</span></p></article>
+    <article class="card reveal d5"><div class="card__icon">✈️</div><h3><span class="t-fa">خلاصه تلگرام</span><span class="t-en">Telegram digests</span></h3><p><span class="t-fa">گزارش دستی یا خودکار با پیوست CSV ژورنال برای اجراهای زمان‌بندی‌شده.</span><span class="t-en">Manual or auto-on-finish reports, auto-attaching the journal CSV for scheduled runs.</span></p></article>
+    <article class="card reveal d6"><div class="card__icon">🗂️</div><h3><span class="t-fa">تاریخچه و CSV</span><span class="t-en">History &amp; CSV</span></h3><p><span class="t-fa">جست‌وجو، فیلتر، بازه‌های زمانی و خروجی CSV تک‌کلیکی از هر جدول.</span><span class="t-en">Search, filter, time ranges and one-click CSV export from every table.</span></p></article>
+    <article class="card reveal d7"><div class="card__icon">🌐</div><h3><span class="t-fa">دوزبانه RTL</span><span class="t-en">Bilingual RTL</span></h3><p><span class="t-fa">فارسی پیش‌فرض با چیدمان راست‌به‌چپ؛ انگلیسی با یک کلیک و چیدمان LTR.</span><span class="t-en">Persian-first with RTL layout; English one click away with mirrored LTR.</span></p></article>
+  </div>
+</section>
+
+<!-- ═══════════════ CHAPTERS ═══════════════ -->
+<main class="book">
+
+  <!-- CH 1 -->
+  <section class="chapter reveal" id="intro">
+    <div class="chapter__num" aria-hidden="true">01</div>
+    <div class="chapter__grid">
+      <div class="chapter__text">
+        <span class="chip"><span class="t-fa">فصل اول</span><span class="t-en">Chapter 1</span></span>
+        <h2><span class="t-fa">کلین آی‌پی اسکنر چیست؟</span><span class="t-en">What is Clean IP Scanner?</span></h2>
+        <p>
+          <span class="t-fa">یک ابزار وب <b>کاملاً محلی</b> برای پیدا کردن IPهای «پاک» — یعنی IPهایی که سریع‌اند، پاسخ می‌دهند و برای عبور از فیلترینگ یا اتصال به سرویس‌های CDN مناسب‌اند. همه‌چیز روی سیستم خودت اجرا می‌شود: دیتابیس لوکال است، اسکن لوکال است و هیچ داده‌ای جایی ارسال نمی‌شود.</span>
+          <span class="t-en">A <b>fully local</b> web tool for finding <b>clean</b> IPs — fast, responsive addresses that work well with CDNs and circumvention setups. Everything runs on your machine: the database, the scans, the scheduler. Nothing ever leaves your box.</span>
+        </p>
+        <p>
+          <span class="t-fa">رابط کاربری دوزبانه است (فارسی پیش‌فرض، راست‌به‌چپ) و موتور اسکن یک سرویس مستقل <code>Bun</code> است که با <code>socket.io</code> به رابط وصل می‌شود — به همین دلیل پیشرفت اسکن در لحظه و بدون رفرش دیده می‌شود.</span>
+          <span class="t-en">The UI is bilingual (Persian by default, RTL), and the scan engine is a standalone <code>Bun</code> service connected via <code>socket.io</code> — that is why scan progress streams live, without refresh.</span>
+        </p>
+        <div class="callout callout--tip">
+          <b><span class="t-fa">💡 نکته</span><span class="t-en">💡 Tip</span></b>
+          <span class="t-fa">«IP پاک» یعنی کمتر گزارش‌شده و کمتر بلاک‌شده — ابزار با تأخیر و سرعت دانلود واقعی آن را رتبه‌بندی می‌کند.</span>
+          <span class="t-en">A “clean” IP is one that is less flagged and less blocked — the tool ranks candidates by real latency and download speed.</span>
+        </div>
+      </div>
+      <figure class="chapter__art tilt">
+        <img src="assets/art-scan.png" alt="Scan illustration" loading="lazy" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- CH 2 -->
+  <section class="chapter reveal" id="quickstart">
+    <div class="chapter__num" aria-hidden="true">02</div>
+    <div class="chapter__grid chapter__grid--wide">
+      <div>
+        <span class="chip"><span class="t-fa">فصل دوم</span><span class="t-en">Chapter 2</span></span>
+        <h2><span class="t-fa">نصب و راه‌اندازی در ۴ قدم</span><span class="t-en">Setup in four steps</span></h2>
+        <p>
+          <span class="t-fa">پیش‌نیاز فقط <a href="https://bun.sh" target="_blank" rel="noopener">Bun</a> نسخه ۱.۱ به بالاست. مخزن را کلون کنید و چهار دستور زیر را اجرا کنید:</span>
+          <span class="t-en">The only prerequisite is <a href="https://bun.sh" target="_blank" rel="noopener">Bun</a> 1.1+. Clone the repo and run the four commands below:</span>
+        </p>
+        <div class="codecard" dir="ltr">
+          <div class="codecard__head"><span>1 · clone &amp; install</span><button class="copy" aria-label="copy">⧉</button></div>
+          <pre><code>git clone https://github.com/CheginiSoroush/clean-ip-scanner.git
+cd clean-ip-scanner
+bun install</code></pre>
+        </div>
+        <div class="codecard" dir="ltr">
+          <div class="codecard__head"><span>2 · database (SQLite + Prisma)</span><button class="copy" aria-label="copy">⧉</button></div>
+          <pre><code>bun run db:push</code></pre>
+        </div>
+        <div class="codecard" dir="ltr">
+          <div class="codecard__head"><span>3 · web app → :3000</span><button class="copy" aria-label="copy">⧉</button></div>
+          <pre><code>bun run dev</code></pre>
+        </div>
+        <div class="codecard" dir="ltr">
+          <div class="codecard__head"><span>4 · scan engine → :3003</span><button class="copy" aria-label="copy">⧉</button></div>
+          <pre><code>cd mini-services/scan-service
+./run.sh</code></pre>
+        </div>
+        <div class="callout callout--warn">
+          <b><span class="t-fa">⚠️ مهم</span><span class="t-en">⚠️ Important</span></b>
+          <span class="t-fa">موتور اسکن باید روشن بماند؛ اگر خاموش شود رابط کاربری حالت «قطع» را نشان می‌دهد و اسکن شروع نمی‌شود.</span>
+          <span class="t-en">Keep the engine running; if it is down the UI shows a “disconnected” state and scans will not start.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 3 -->
+  <section class="chapter reveal" id="first-scan">
+    <div class="chapter__num" aria-hidden="true">03</div>
+    <div class="chapter__grid chapter__grid--wide">
+      <div>
+        <span class="chip"><span class="t-fa">فصل سوم</span><span class="t-en">Chapter 3</span></span>
+        <h2><span class="t-fa">اولین اسکن زنده</span><span class="t-en">Your first live scan</span></h2>
+        <ol class="steps">
+          <li>
+            <b><span class="t-fa">پریست CDN را انتخاب کنید</span><span class="t-en">Pick a CDN preset</span></b>
+            <span class="t-fa">«کلادفلر» برای شروع بهترین است (۱.۵M+ آی‌پی). می‌توانید رنج‌های CIDR سفارشی را با پریست ترکیب کنید.</span>
+            <span class="t-en">“Cloudflare” is the best starting point (1.5M+ IPs). Custom CIDR ranges can be mixed with any preset.</span>
+          </li>
+          <li>
+            <b><span class="t-fa">پورت و تنظیمات را تعیین کنید</span><span class="t-en">Set port &amp; tuning</span></b>
+            <span class="t-fa">پورت پیش‌فرض ۴۴۳ است. «تعداد پینگ»، «تایم‌اوت»، «همزمانی» و «حداکثر IP» را متناسب با شبکه خودتان تنظیم کنید.</span>
+            <span class="t-en">Default port is 443. Tune ping count, timeout, concurrency and max IPs to match your network.</span>
+          </li>
+          <li>
+            <b><span class="t-fa">اسکن را شروع کنید</span><span class="t-en">Start the scan</span></b>
+            <span class="t-fa">نوار پیشرفت، لاگ زنده موتور و شمارنده‌ها را همان لحظه در داشبورد می‌بینید.</span>
+            <span class="t-en">Watch the progress bar, live engine log and counters update in real time.</span>
+          </li>
+          <li>
+            <b><span class="t-fa">تست سرعت و رتبه‌بندی</span><span class="t-en">Speed test &amp; ranking</span></b>
+            <span class="t-fa">IPهای پاسخگو به‌طور خودکار تست سرعت می‌شوند و در جدول «بهترین‌ها» رتبه می‌گیرند.</span>
+            <span class="t-en">Alive IPs are speed-tested automatically and ranked in the “best” table.</span>
+          </li>
+        </ol>
+        <figure class="shot">
+          <img src="screenshots/dashboard.png" alt="Dashboard — Persian UI" loading="lazy" />
+          <figcaption><span class="t-fa">داشبورد اسکن زنده — آمار کلی، پیکربندی و لاگ موتور</span><span class="t-en">Live scan dashboard — stats, configuration and engine log</span></figcaption>
+        </figure>
+        <div class="kbd-grid">
+          <div><span class="t-fa">میانبرهای صفحه‌کلید:</span><span class="t-en">Keyboard shortcuts:</span></div>
+          <span><kbd>1</kbd>–<kbd>6</kbd> <span class="t-fa">تب‌ها</span><span class="t-en">tabs</span></span>
+          <span><kbd>F</kbd> <span class="t-fa">تمرکز روی رنج</span><span class="t-en">focus ranges</span></span>
+          <span><kbd>Esc</kbd> <span class="t-fa">بستن دیالوگ</span><span class="t-en">close dialog</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 4 -->
+  <section class="chapter reveal" id="hunt">
+    <div class="chapter__num" aria-hidden="true">04</div>
+    <div class="chapter__grid">
+      <div class="chapter__text">
+        <span class="chip"><span class="t-fa">فصل چهارم</span><span class="t-en">Chapter 4</span></span>
+        <h2><span class="t-fa">شکارچی گوگل و زمان‌بان شکار</span><span class="t-en">Google hunter &amp; hunt scheduler</span></h2>
+        <p>
+          <span class="t-fa"><b>شکارچی IP گوگل</b> رنج‌های رو‌به‌گوگل را از منابع زنده جمع می‌کند: رکوردهای SPF، رنج‌های API، اسنپ‌شات‌های RIPE و… . سلامت هر منبع گزارش می‌شود و نتایج در «دانش‌نامه» ذخیره می‌ماند تا اسکن‌های بعدی سریع‌تر شوند.</span>
+          <span class="t-en">The <b>Google IP hunter</b> collects Google-facing ranges from live sources: SPF records, API ranges, RIPE snapshots and more. Source health is reported and results persist in a knowledge base, making later hunts faster.</span>
+        </p>
+        <p>
+          <span class="t-fa"><b>زمان‌بان شکار</b> اجازه می‌دهد شکار به‌صورت دوره‌ای و سمت سرور اجرا شود. هر اجرا در «ژورنال» ثبت می‌شود و یک <b>بازتاب تنظیمات</b> فشرده (پروایدور، هدف، دسته، همزمانی، host:port، سرعت، سطح تأیید) کنار نتیجه می‌ماند — حتی بعد از ری‌استارت.</span>
+          <span class="t-en">The <b>hunt scheduler</b> runs hunts periodically on the server side. Every fire is recorded in the journal with a compact <b>settings echo</b> (provider, target, batch, concurrency, host:port, speed, verify) — persisted across restarts.</span>
+        </p>
+        <div class="callout callout--tip">
+          <b><span class="t-fa">💡 ترفند</span><span class="t-en">💡 Pro tip</span></b>
+          <span class="t-fa">ژورنال اجراها را می‌توانید با یک کلیک به CSV ببرید و در اکسل تحلیل کنید.</span>
+          <span class="t-en">Export the run journal to CSV with one click and analyze it in your spreadsheet.</span>
+        </div>
+      </div>
+      <figure class="chapter__art tilt">
+        <img src="assets/art-warp.png" alt="Scheduler illustration" loading="lazy" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- CH 5 -->
+  <section class="chapter reveal" id="warp">
+    <div class="chapter__num" aria-hidden="true">05</div>
+    <div class="chapter__grid">
+      <div class="chapter__text">
+        <span class="chip"><span class="t-fa">فصل پنجم</span><span class="t-en">Chapter 5</span></span>
+        <h2><span class="t-fa">اسکنر WARP</span><span class="t-en">WARP scanner</span></h2>
+        <p>
+          <span class="t-fa">در تب <b>WARP</b> می‌توانید اندپوینت‌های کلادفلر WARP را پروب کنید: نرخ زنده‌بودن، تأخیر و تاریخچه هر دسته پروب ذخیره می‌شود تا روند سلامت شبکه‌تان را ببینید.</span>
+          <span class="t-en">The <b>WARP</b> tab probes Cloudflare WARP endpoints: alive-rate, latency and full history per probe batch are stored so you can watch your network’s trend.</span>
+        </p>
+        <figure class="shot">
+          <img src="screenshots/warp.png" alt="WARP tab" loading="lazy" />
+          <figcaption><span class="t-fa">تب WARP با تاریخچه و خروجی CSV</span><span class="t-en">WARP tab with history and CSV export</span></figcaption>
+        </figure>
+        <div class="callout callout--warn">
+          <b><span class="t-fa">⚠️ محیطی</span><span class="t-en">⚠️ Environmental</span></b>
+          <span class="t-fa">اگر شبکه‌تان UDP را بسته باشد، نرخ زنده‌بودن صفر نشان داده می‌شود — این محدودیت شبکه است، نه باگ ابزار.</span>
+          <span class="t-en">If your network blocks UDP, the alive-rate will read zero — that is a network restriction, not a bug.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 6 -->
+  <section class="chapter reveal" id="telegram">
+    <div class="chapter__num" aria-hidden="true">06</div>
+    <div class="chapter__grid">
+      <div class="chapter__text">
+        <span class="chip"><span class="t-fa">فصل ششم</span><span class="t-en">Chapter 6</span></span>
+        <h2><span class="t-fa">تلگرام و DDNS کلادفلر</span><span class="t-en">Telegram &amp; Cloudflare DDNS</span></h2>
+        <p>
+          <span class="t-fa">در تب <b>یکپارچه‌سازی</b>، توکن ربات و شناسه چت را وارد کنید تا خلاصه نتایج به تلگرام‌تان برسد — دستی یا خودکار پس از پایان هر اسکن. اجراهای زمان‌بندی‌شده به‌طور خودکار <b>CSV ژورنال</b> را هم پیوست می‌کنند.</span>
+          <span class="t-en">In the <b>Integrations</b> tab, enter your bot token and chat ID to receive result digests — manually or automatically after each scan. Scheduled runs auto-attach the journal <b>CSV</b> via <code>sendDocument</code>.</span>
+        </p>
+        <p>
+          <span class="t-fa"><b>DDNS کلادفلر</b> هم بهترین IP پاک را مستقیم روی رکورد A دامنه‌تان می‌گذارد؛ دستی یا خودکار با آستانه حداقل IP.</span>
+          <span class="t-en"><b>Cloudflare DDNS</b> pushes the best clean IP straight to your domain’s A record — manually, or automatically with a minimum-IP threshold.</span>
+        </p>
+        <figure class="shot">
+          <img src="screenshots/integrations.png" alt="Integrations tab" loading="lazy" />
+          <figcaption><span class="t-fa">تب یکپارچه‌سازی — تلگرام و DDNS</span><span class="t-en">Integrations tab — Telegram and DDNS</span></figcaption>
+        </figure>
+      </div>
+      <figure class="chapter__art tilt">
+        <img src="assets/art-telegram.png" alt="Telegram illustration" loading="lazy" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- CH 7 -->
+  <section class="chapter reveal" id="history">
+    <div class="chapter__num" aria-hidden="true">07</div>
+    <div class="chapter__grid chapter__grid--wide">
+      <div>
+        <span class="chip"><span class="t-fa">فصل هفتم</span><span class="t-en">Chapter 7</span></span>
+        <h2><span class="t-fa">تاریخچه، علاقه‌مندی‌ها و خروجی CSV</span><span class="t-en">History, favorites &amp; CSV export</span></h2>
+        <ul class="checklist">
+          <li><span class="t-fa">تاریخچه اسکن‌ها با جست‌وجو، فیلتر و مرتب‌سازی + بازه‌های «۲۴ ساعت / ۷ روز / همه»</span><span class="t-en">Scan history with search, filter and sort + 24h / 7d / all range chips</span></li>
+          <li><span class="t-fa">علاقه‌مندی‌ها با بررسی سلامت دوره‌ای IPهای منتخب</span><span class="t-en">Favorites with periodic health checks of your picked IPs</span></li>
+          <li><span class="t-fa">خروجی CSV از سه جدول: تاریخچه شکار، WARP و ژورنال زمان‌بان (با BOM سازگار با اکسل)</span><span class="t-en">CSV export from three tables: hunt history, WARP and the scheduler journal (Excel-friendly BOM)</span></li>
+          <li><span class="t-fa">همه‌چیز در SQLite محلی — پشتیبان‌گیری فقط کپی یک فایل است</span><span class="t-en">All in local SQLite — backing up is copying one file</span></li>
+        </ul>
+        <figure class="shot">
+          <img src="screenshots/history.png" alt="History tab" loading="lazy" />
+          <figcaption><span class="t-fa">تب تاریخچه اسکن‌ها</span><span class="t-en">Scan history tab</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 8 -->
+  <section class="chapter reveal" id="faq">
+    <div class="chapter__num" aria-hidden="true">08</div>
+    <div class="chapter__grid chapter__grid--wide">
+      <div>
+        <span class="chip"><span class="t-fa">فصل هشتم</span><span class="t-en">Chapter 8</span></span>
+        <h2><span class="t-fa">عیب‌یابی و سؤالات پرتکرار</span><span class="t-en">Troubleshooting &amp; FAQ</span></h2>
+
+        <h3 class="t-fa">عیب‌یابی</h3><h3 class="t-en">Troubleshooting</h3>
+        <div class="tablewrap" dir="ltr">
+          <table>
+            <thead><tr><th>Symptom</th><th>Fix</th></tr></thead>
+            <tbody>
+              <tr><td>UI shows “disconnected”</td><td>Start the engine: <code>cd mini-services/scan-service &amp;&amp; ./run.sh</code></td></tr>
+              <tr><td>Scan returns nothing</td><td>Lower concurrency, raise timeout, try another port (443 → 2053/2083/2087)</td></tr>
+              <tr><td>Telegram: 502 Unauthorized</td><td>Bot token is invalid — regenerate from @BotFather and re-enter chat ID</td></tr>
+              <tr><td>WARP alive-rate = 0</td><td>UDP is blocked on your network — environmental, not a bug</td></tr>
+              <tr><td>Database errors on boot</td><td>Run <code>bun run db:push</code> again</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="t-fa">سؤالات پرتکرار</h3><h3 class="t-en">Frequently asked</h3>
+        <details class="faq"><summary><span class="t-fa">آیا داده‌هایم به سروری ارسال می‌شود؟</span><span class="t-en">Is my data sent anywhere?</span></summary><p><span class="t-fa">نه. اسکن، دیتابیس و زمان‌بان همگی لوکال‌اند؛ فقط اگر خودتان تلگرام را پیکربندی کنید گزارش‌ها به ربات خودتان می‌روند.</span><span class="t-en">No. Scans, the database and the scheduler are all local; only if you configure Telegram yourself do digests go to your own bot.</span></p></details>
+        <details class="faq"><summary><span class="t-fa">تفاوت «اسکن» و «شکار» چیست؟</span><span class="t-en">Scan vs hunt — what is the difference?</span></summary><p><span class="t-fa">اسکن، رنج‌های یک پریست CDN را بررسی می‌کند؛ شکار، رنج‌های رو‌به‌گوگل را از منابع زنده می‌یابد و برای همان‌ها اسکن می‌چیند.</span><span class="t-en">A scan probes a CDN preset’s ranges; a hunt discovers Google-facing ranges from live sources and builds scans on top of them.</span></p></details>
+        <details class="faq"><summary><span class="t-fa">روی ویندوز / مک کار می‌کند؟</span><span class="t-en">Does it run on Windows / macOS?</span></summary><p><span class="t-fa">بله — هر دو بخش روی Bun اجرا می‌شوند که برای هر سه سیستم‌عامل نسخه دارد.</span><span class="t-en">Yes — both parts run on Bun, which ships for all three platforms.</span></p></details>
+        <details class="faq"><summary><span class="t-fa">چطور از همه‌چیز پشتیبان بگیرم؟</span><span class="t-en">How do I back everything up?</span></summary><p><span class="t-fa">فایل <code>db/custom.db</code> را کپی کنید — کل تاریخچه، تنظیمات و ژورنال همان‌جاست.</span><span class="t-en">Copy <code>db/custom.db</code> — all history, settings and the journal live there.</span></p></details>
+        <details class="faq"><summary><span class="t-fa">لایسنس چیست؟</span><span class="t-en">What is the license?</span></summary><p><span class="t-fa">MIT — آزاد برای استفاده شخصی و تجاری با ذکر نام نویسنده.</span><span class="t-en">MIT — free for personal and commercial use with attribution.</span></p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="chapter reveal" id="roadmap">
+    <div class="chapter__num" aria-hidden="true">→</div>
+    <div class="chapter__grid chapter__grid--wide">
+      <div>
+        <span class="chip"><span class="t-fa">جادهٔ آینده</span><span class="t-en">Roadmap</span></span>
+        <h2><span class="t-fa">چه چیزی در راه است</span><span class="t-en">What is next</span></h2>
+        <div class="timeline">
+          <div class="tl"><b>v7.7</b><span class="t-fa">نمودار کوچک روند زنده‌بودن WARP · بازه‌های زمانی سفارشی · دیالوگ جزئیات هر اجرا</span><span class="t-en">WARP alive-rate sparkline · custom date ranges · per-fire detail dialog</span></div>
+          <div class="tl"><b>v7.8</b><span class="t-fa">بازبینی کامل i18n سطوح v7 · نمودار روند امتیاز هر IP · درون‌ریزی/برون‌بری پریست وزن‌ها</span><span class="t-en">v7-surface i18n audit · per-IP score sparkline · weight-preset import/export</span></div>
+          <div class="tl"><b>later</b><span class="t-fa">نمای کلی چند‌دستگاهی · اعلان‌های سیستمی · تم‌های سفارشی</span><span class="t-en">multi-instance overview · system notifications · custom themes</span></div>
+        </div>
+        <div class="cta-final reveal">
+          <a class="btn btn--primary btn--lg" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">
+            ⭐ <span class="t-fa">در گیتهاب ستاره بزنید</span><span class="t-en">Star on GitHub</span>
+          </a>
+          <a class="btn btn--outline btn--lg" href="https://github.com/CheginiSoroush/clean-ip-scanner/issues" target="_blank" rel="noopener">
+            <span class="t-fa">گزارش باگ یا ایده</span><span class="t-en">Report a bug / idea</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="foot">
+  <img class="foot__logo" src="assets/logo.png" alt="" />
+  <p class="foot__made">
+    <span class="t-fa">ساخته‌شده توسط <b>سروش چگینی</b> برای شرایط شبکه ایران ⚡</span>
+    <span class="t-en">Built by <b>Soroush Chegini</b> for Iran’s network conditions ⚡</span>
+  </p>
+  <p class="foot__links">
+    <a href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="https://github.com/CheginiSoroush/clean-ip-scanner/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a> ·
+    <a href="https://cheginisoroush.github.io/clean-ip-scanner/">Handbook</a>
+  </p>
+  <p class="foot__copy">© 2026 Soroush Chegini — Clean IP Scanner · v7.6.0-web</p>
+</footer>
+
+<div class="lightbox" id="lightbox" hidden><img src="" alt="" /><button aria-label="close">✕</button></div>
+
+<script src="app.js"></script>
+</body>
+</html>
