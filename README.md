@@ -1,12 +1,69 @@
-# Clean IP Scanner — Web Edition
+<p align="center">
+  <img src="docs/assets/logo.png" alt="Clean IP Scanner logo" width="120" />
+</p>
 
-![CI](https://github.com/CheginiSoroush/clean-ip-scanner/actions/workflows/ci.yml/badge.svg) ![version](https://img.shields.io/badge/version-7.6.0--web-10b981) ![license](https://img.shields.io/badge/license-MIT-green) ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Bun](https://img.shields.io/badge/Bun-1.3-f472b6)
+<h1 align="center">Clean IP Scanner — Web Edition</h1>
 
-Find clean, fast, CDN-friendly IPs in real time — with a live scanner, a Google
-IP hunter, WARP endpoint probing, a server-side hunt scheduler and Telegram
-digests, all behind an RTL-first bilingual UI.
+<p align="center">
+  <a href="https://github.com/CheginiSoroush/clean-ip-scanner/actions/workflows/ci.yml"><img src="https://github.com/CheginiSoroush/clean-ip-scanner/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <img src="https://img.shields.io/badge/version-7.6.0--web-10b981" alt="version" />
+  <img src="https://img.shields.io/badge/license-MIT-10b981" alt="license" />
+  <img src="https://img.shields.io/badge/Next.js-16-black" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5-10b981" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Bun-1.3-f472b6" alt="Bun" />
+  <a href="https://cheginisoroush.github.io/clean-ip-scanner/"><img src="https://img.shields.io/badge/%F0%9F%93%96-Handbook-10b981" alt="Handbook" /></a>
+</p>
 
-> اسکنر IP پاک و سریع برای CDNها — با رابط دوزبانه (فارسی/انگلیسی) و طراحی راست‌به‌چپ.
+<p align="center">
+  <b>English</b> · Find clean, fast, CDN-friendly IPs in real time — live scanner, Google IP hunter,
+  WARP endpoint probing, server-side hunt scheduler and Telegram digests, behind an RTL-first bilingual UI.
+</p>
+
+<div dir="rtl">
+<p align="center">
+  <b>فارسی</b> · پیدا کردن IPهای پاک، سریع و سازگار با CDNها در لحظه — اسکنر زنده، شکارچی IP گوگل،
+  پروب WARP، زمان‌بان شکار سمت سرور و خلاصه‌سازی تلگرام، همه با رابط دوزبانه و راست‌به‌چپ.
+</p>
+</div>
+
+---
+
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="Clean IP Scanner in action" width="860" />
+</p>
+
+## 📖 Handbook (GitHub Pages)
+
+The full illustrated user manual — setup, first scan, hunt scheduler, WARP,
+Telegram digests, troubleshooting and FAQ — lives on **GitHub Pages**:
+
+**→ [cheginisoroush.github.io/clean-ip-scanner](https://cheginisoroush.github.io/clean-ip-scanner/)**
+
+It is bilingual (فارسی / English), fully animated and deployed automatically
+via GitHub Actions from [`docs/`](./docs/).
+
+## 📸 Screenshots
+
+| Dashboard (fa) | Scan configuration |
+| --- | --- |
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Scan config](docs/screenshots/scan-config.png) |
+
+| WARP scanner | Integrations |
+| --- | --- |
+| ![WARP](docs/screenshots/warp.png) | ![Integrations](docs/screenshots/integrations.png) |
+
+| Scan history | Mobile (390×844) |
+| --- | --- |
+| ![History](docs/screenshots/history.png) | ![Mobile](docs/screenshots/mobile.png) |
+
+<details>
+<summary><b>More views</b></summary>
+
+| Telegram digest | Favorites | English UI |
+| --- | --- | --- |
+| ![Telegram](docs/screenshots/telegram.png) | ![Favorites](docs/screenshots/favorites.png) | ![English](docs/screenshots/english.png) |
+
+</details>
 
 ## ✨ Features
 
@@ -29,8 +86,24 @@ digests, all behind an RTL-first bilingual UI.
 - **Telegram integration** — result digests (manual or auto-on-finish);
   scheduled-run digests automatically **attach the scheduler-journal CSV** via
   `sendDocument`
+- **Cloudflare DDNS** — push the best clean IP straight to an A record
 - **Polished UI** — RTL-first Persian + English (1,096-key dictionary), dark &
   light themes, keyboard shortcuts, mobile-first responsive layout
+
+<div dir="rtl">
+
+## ✨ امکانات (خلاصه فارسی)
+
+- **اسکنر زنده** — اسکن تأخیر TCP/TLS با ماتریس پورت، سطوح تأیید، اندازه دسته، کنترل همزمانی و سقف‌های سخت
+- **پریست‌های CDN** — کلادفلر، گوگل کلاد، فستلی، کلادفرانت، آژور، آروان کلاد و جیکور؛ به‌علاوه رنج‌های CIDR سفارشی و نمونه‌برداری IPv6
+- **شکارچی IP گوگل** — شکار IPهای رو‌به‌گوگل از منابع زنده (رکوردهای SPF، رنج‌های API، اسنپ‌شات‌های RIPE…) با گزارش سلامت منابع و دانش‌نامه داخلی
+- **زمان‌بان شکار** — شکارهای دوره‌ای سمت سرور با ژورنال ماندگار؛ هر اجرا یک **بازتاب تنظیمات** فشرده ثبت می‌کند که از ری‌استارت جان سالم می‌برد
+- **اسکنر WARP** — پروب اندپوینت‌های کلادفلر WARP با نرخ زنده‌بودن و تاریخچه
+- **علاقه‌مندی‌ها و تاریخچه** — جست‌وجو/فیلتر/مرتب‌سازی، بازه‌های زمانی (۲۴ساعت / ۷روز / همه) و خروجی CSV تک‌کلیکی
+- **یکپارچه‌سازی تلگرام** — خلاصه نتایج (دستی یا خودکار)؛ اجراهای زمان‌بندی‌شده به‌طور خودکار CSV ژورنال را پیوست می‌کنند
+- **DDNS کلادفلر** — ارسال بهترین IP پاک به رکورد A با یک کلیک
+
+</div>
 
 ## 🏗 Architecture
 
@@ -75,6 +148,8 @@ cd mini-services/scan-service && ./run.sh
 | Scan engine | 3003 | Bun + socket.io, started via `run.sh`  |
 | Gateway     | 81   | Optional Caddy front proxy             |
 
+> 📖 Step-by-step illustrated guide: **[the Handbook](https://cheginisoroush.github.io/clean-ip-scanner/)**
+
 ## 🔧 Scripts
 
 | Script            | Purpose                              |
@@ -95,6 +170,8 @@ cd mini-services/scan-service && ./run.sh
 │   └── lib/               # scan protocol, i18n, CSV builders, utils
 ├── mini-services/
 │   └── scan-service/      # Bun scan engine (socket.io)
+├── docs/                  # GitHub Pages handbook (static, animated)
+├── .github/workflows/     # CI + Pages deployment
 ├── prisma/                # schema (SQLite)
 └── Caddyfile              # gateway config
 ```
