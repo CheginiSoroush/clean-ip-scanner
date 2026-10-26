@@ -40,13 +40,14 @@
       <a href="#warp"><span class="t-fa">WARP</span><span class="t-en">WARP</span></a>
       <a href="#telegram"><span class="t-fa">تلگرام</span><span class="t-en">Telegram</span></a>
       <a href="#faq"><span class="t-fa">سؤالات</span><span class="t-en">FAQ</span></a>
+      <a class="nav__open-item" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener" data-app-link><span class="t-fa">🚀 اجرای اسکنر</span><span class="t-en">🚀 Open the app</span></a>
       <a class="nav__gh-item" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
     <div class="nav__actions">
       <button id="langToggle" class="btn btn--ghost btn--sm" aria-label="تغییر زبان / toggle language">
         <span class="t-fa">EN</span><span class="t-en">فا</span>
       </button>
-      <a class="btn btn--ghost btn--sm nav__gh" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn btn--primary btn--sm nav__open" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener" data-app-link><span class="t-fa">اجرای اسکنر ↗</span><span class="t-en">Open app ↗</span></a>
       <button id="navBurger" class="nav__burger" aria-label="منو / Menu" aria-expanded="false" aria-controls="navMenu">
         <span></span><span></span><span></span>
       </button>
@@ -78,11 +79,11 @@
       <span class="t-en">The complete illustrated handbook for Clean IP Scanner — from installation to automated hunting, WARP, Telegram and troubleshooting, step by step.</span>
     </p>
     <div class="hero__cta reveal d3">
-      <a class="btn btn--primary btn--lg" href="#quickstart">
-        <span class="t-fa">شروع کنید 🚀</span><span class="t-en">Get started 🚀</span>
+      <a class="btn btn--primary btn--lg" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener" data-app-link>
+        <span class="t-fa">اجرای اسکنر ↗</span><span class="t-en">Launch the scanner ↗</span>
       </a>
-      <a class="btn btn--outline btn--lg" href="#intro">
-        <span class="t-fa">فصل اول</span><span class="t-en">Chapter 1</span>
+      <a class="btn btn--outline btn--lg" href="#quickstart">
+        <span class="t-fa">راهنمای راه‌اندازی</span><span class="t-en">Setup guide</span>
       </a>
     </div>
     <div class="terminal reveal d4" dir="ltr">
@@ -97,9 +98,42 @@
 <section class="stats">
   <div class="stats__inner">
     <div class="stat reveal"><b data-count="7">0</b><span class="t-fa">پریست CDN</span><span class="t-en">CDN presets</span></div>
-    <div class="stat reveal d1"><b data-count="1096">0</b><span class="t-fa">کلید ترجمه</span><span class="t-en">i18n keys</span></div>
+    <div class="stat reveal d1"><b data-count="1139">0</b><span class="t-fa">کلید ترجمه</span><span class="t-en">i18n keys</span></div>
     <div class="stat reveal d2"><b data-count="2">0</b><span class="t-fa">تم روشن/تاریک</span><span class="t-en">themes</span></div>
     <div class="stat reveal d3"><b data-count="100" data-suffix="%">0</b><span class="t-fa">محلی و خصوصی</span><span class="t-en">local &amp; private</span></div>
+  </div>
+</section>
+
+<!-- ═══════════════ OPEN APP ═══════════════ -->
+<section class="open-app" id="open-app">
+  <div class="open-app__card reveal">
+    <div class="open-app__glow" aria-hidden="true"></div>
+    <div class="open-app__brand" aria-hidden="true">
+      <img src="assets/logo.png" alt="" width="72" height="72" />
+      <span class="open-app__ping"></span>
+    </div>
+    <div class="open-app__text">
+      <h2>
+        <span class="t-fa">همین حالا اسکنر را اجرا کن</span>
+        <span class="t-en">Launch the scanner right now</span>
+      </h2>
+      <p>
+        <span class="t-fa">نسخهٔ وب کامل — اسکن زنده، WARP، شکار، زمان‌بان و تلگرام؛ همه‌چیز داخل مرورگر تو اجرا می‌شود.</span>
+        <span class="t-en">The full web edition — live scan, WARP, hunt, scheduler and Telegram; everything runs right in your browser.</span>
+      </p>
+      <div class="open-app__actions">
+        <a class="btn btn--primary btn--lg" href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener" data-app-link>
+          <span class="t-fa">باز کردن Clean IP Scanner ↗</span><span class="t-en">Open Clean IP Scanner ↗</span>
+        </a>
+        <a class="btn btn--outline" href="#quickstart">
+          <span class="t-fa">راهنمای راه‌اندازی</span><span class="t-en">Setup guide</span>
+        </a>
+      </div>
+      <small class="open-app__hint">
+        <span class="t-fa">میزبانی محلی و خصوصی — هیچ داده‌ای از سیستم تو خارج نمی‌شود.</span>
+        <span class="t-en">Self-hosted and private — nothing ever leaves your machine.</span>
+      </small>
+    </div>
   </div>
 </section>
 
@@ -400,6 +434,7 @@ bun install</code></pre>
     <span class="t-en">Built by <b>Soroush Chegini</b> for Iran’s network conditions ⚡</span>
   </p>
   <p class="foot__links">
+    <a href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener" data-app-link><span class="t-fa">اجرای اسکنر</span><span class="t-en">Open app</span></a> ·
     <a href="https://github.com/CheginiSoroush/clean-ip-scanner" target="_blank" rel="noopener">GitHub</a> ·
     <a href="https://github.com/CheginiSoroush/clean-ip-scanner/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a> ·
     <a href="https://cheginisoroush.github.io/clean-ip-scanner/">Handbook</a>

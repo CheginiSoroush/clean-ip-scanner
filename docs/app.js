@@ -2,6 +2,19 @@
 (() => {
   "use strict";
 
+  /* ── app launch links ─────────────────────────────────── */
+  /* Put the public URL of your Clean IP Scanner instance below and every
+     launch button on this page will open it in a new tab. Until then,
+     all launch buttons point to the GitHub repository. */
+  const APP_URL = "";
+  if (APP_URL) {
+    document.querySelectorAll("[data-app-link]").forEach((a) => {
+      a.setAttribute("href", APP_URL);
+      a.setAttribute("target", "_blank");
+      a.setAttribute("rel", "noopener");
+    });
+  }
+
   /* ── language ─────────────────────────────────────────── */
   const root = document.documentElement;
   const toggle = document.getElementById("langToggle");
