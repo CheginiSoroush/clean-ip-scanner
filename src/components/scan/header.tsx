@@ -130,7 +130,7 @@ export function Header({ connected, rtt }: HeaderProps) {
 
           <Button variant="ghost" size="icon" className="hidden size-9 sm:inline-flex" asChild>
             <a
-              href="https://github.com/4n0nymou3/Clean-IP-Scanner"
+              href="https://github.com/CheginiSoroush/clean-ip-scanner"
               target="_blank"
               rel="noreferrer"
               aria-label={t('header.github')}

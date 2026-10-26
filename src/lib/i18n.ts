@@ -465,7 +465,7 @@ const fa = {
   'sc.close': 'بستن پنجره‌ها',
 
   // ---------- page / footer ----------
-  'page.made': 'ساخته‌شده برای شرایط شبکه ایران ⚡',
+  'page.made': 'ساخته‌شده توسط سروش چگینی برای شرایط شبکه ایران ⚡',
   'page.shortcuts': 'میان‌برها',
   'page.shortcuts.aria': 'نمایش میان‌برهای صفحه‌کلید',
   'page.scrolltop': 'بازگشت به بالای صفحه',
@@ -1653,7 +1653,7 @@ const en: Record<DictKey, string> = {
   'sc.batch': 'Batch Xray probe',
   'sc.close': 'Close dialogs',
 
-  'page.made': 'Built for Iran’s network conditions ⚡',
+  'page.made': 'Built by Soroush Chegini for Iran’s network conditions ⚡',
   'page.shortcuts': 'Shortcuts',
   'page.shortcuts.aria': 'Show keyboard shortcuts',
   'page.scrolltop': 'Back to top',

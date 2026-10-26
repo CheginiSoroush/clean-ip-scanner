@@ -1,6 +1,6 @@
 # Clean IP Scanner — Web Edition
 
-![version](https://img.shields.io/badge/version-7.6.0--web-10b981) ![license](https://img.shields.io/badge/license-MIT-green) ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Bun](https://img.shields.io/badge/Bun-1.3-f472b6)
+![CI](https://github.com/CheginiSoroush/clean-ip-scanner/actions/workflows/ci.yml/badge.svg) ![version](https://img.shields.io/badge/version-7.6.0--web-10b981) ![license](https://img.shields.io/badge/license-MIT-green) ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Bun](https://img.shields.io/badge/Bun-1.3-f472b6)
 
 Find clean, fast, CDN-friendly IPs in real time — with a live scanner, a Google
 IP hunter, WARP endpoint probing, a server-side hunt scheduler and Telegram

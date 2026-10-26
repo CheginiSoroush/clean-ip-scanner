@@ -751,9 +751,15 @@ export default function Home() {
       {/* Footer — sticks to bottom (mt-auto) and is pushed naturally on overflow */}
       <footer className="mt-auto border-t bg-background/60">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-xs text-muted-foreground sm:flex-row">
-          <p className="text-center sm:text-start">
+          <a
+            href="https://github.com/CheginiSoroush/clean-ip-scanner"
+            target="_blank"
+            rel="noreferrer"
+            className="text-center transition-colors hover:text-foreground sm:text-start"
+            aria-label={t('header.github')}
+          >
             {t('page.made')}
-          </p>
+          </a>
           <div className="flex items-center gap-3">
             <button
               type="button"
